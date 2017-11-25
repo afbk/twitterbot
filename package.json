@@ -1,14 +1,24 @@
 {
   "name": "twitterbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "WIP",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Anders Folkmar Belling Kraneled",
   "license": "ISC",
   "dependencies": {
     "twit": "^2.2.9"
-  }
+  },
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afbk/twitterbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/afbk/twitterbot/issues"
+  },
+  "homepage": "https://github.com/afbk/twitterbot#readme"
 }
