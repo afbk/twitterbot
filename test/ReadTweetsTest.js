@@ -8,7 +8,7 @@ describe("Reads tweets from specified account", () => {
     expect(ReadTweets()).to.be.a("string");
   });
 
-  it("should recieve tweets from specific user account in an array", () => {
+  it("should return tweets from specific user account in an array", () => {
     ReadTweets("RealDonaldTrump", function(callback) {
       expect(callback).to.be.an("array");
     });
