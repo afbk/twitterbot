@@ -12,17 +12,21 @@ module.exports = (twitterCredentials);
 let twitterCredentials = require("./twitterCredentials");
 let T = new twit(twitterCredentials);
 
-function ReadTweets(user) {
-  if (!user) {
-    return "No user input";
-  }
-  else {
-    T.get("search/tweets", { from: user, count: 2 }, function(err, data, response, callback) {
-      callback = data.statuses;
-    });
-  }
-}
 
-ReadTweets("realDonaldTrump");
+let ReadTweets = function(user) {
+  return new Promise((resolve, reject) => {
+    if (!user) {
+      reject(Error("error no user input"));
+    }
+    else {
+      resolve(T.get("search/tweets", { from: user, count: 2, "tweet_mode": "extended"}, function(err, data, response) {}));
+    }
+  });
+};
 
+
+
+ReadTweets("RealDonaldTrump") /*.then((result) => {
+  console.log(result.data.statuses[0].text);
+})*/ ;
 module.exports = ReadTweets;
