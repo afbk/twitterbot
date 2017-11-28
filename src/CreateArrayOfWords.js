@@ -15,11 +15,11 @@ function CreateConcatenatedStringOfWords() {
     });
 };
 
-//Splits the concatenated string into an array in order to do markov-like things with it later
+//Splits the concatenated string into an array in order to do things with it later
 function CreateArrayFromString() {
     return new Promise((resolve, reject) => {
         CreateConcatenatedStringOfWords().then((result) => {
-            let splitWords = result.split(" ");
+            let splitWords = result.split(/[\.\!\,\:\/] ?/g);
             resolve(splitWords);
         });
         
