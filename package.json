@@ -4,11 +4,14 @@
   "description": "WIP",
   "main": "index.js",
   "scripts": {
+    "run": "node src/ReadTweets.js",
     "test": "mocha"
   },
   "author": "Anders Folkmar Belling Kraneled",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.17.4",
+    "node-schedule": "^1.2.5",
     "twit": "^2.2.9"
   },
   "devDependencies": {
