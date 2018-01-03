@@ -90,6 +90,8 @@ function goGoGo() {
   })
 }
 
+//runs once then waits for one hour between tweets
+goGoGo()
 setInterval(() => {
   goGoGo()
 }, 3600000)
