@@ -13,6 +13,14 @@ let twitterCredentials = require('./twitterCredentials')
 let T = new twit(twitterCredentials)
 let _ = require('lodash')
 let Tweet = require('./Tweet')
+let express = require('express')
+
+//Webinterface in order to check status and to satisfy heroku.
+let app = express()
+app.get('/', (req, res) => res.send('Twitterbot running..'))
+app.listen(process.env.PORT, () => console.log('App listening on port ', process.env.PORT))
+
+
 
 let ReadTweets = function(user) {
   return new Promise((resolve, reject) => {
