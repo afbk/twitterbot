@@ -18,11 +18,11 @@ let ReadTweets = function(user) {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(Error('error no user input'))
-    } else {
+    }
+    else {
       resolve(
         T.get(
-          'search/tweets',
-          { from: user, count: 100, tweet_mode: 'extended' },
+          'search/tweets', { from: user, count: 100, tweet_mode: 'extended' },
           function(err, data, response) {}
         )
       )
@@ -49,7 +49,7 @@ function CreateArrayFromString(username) {
   return new Promise((resolve, reject) => {
     CreateConcatenatedStringOfWords(username).then(result => {
       let HTTPregex =
-        '/https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g'
+        '/https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g'
       let removeHTTP = result.replace(HTTPregex, '')
       let splitWords = removeHTTP.split(/[\.\!\,] ?/g)
 
