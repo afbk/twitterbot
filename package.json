@@ -4,7 +4,7 @@
   "description": "WIP",
   "main": "index.js",
   "scripts": {
-    "run": "node src/ReadTweets.js",
+    "start": "node src/ReadTweets.js",
     "test": "mocha"
   },
   "author": "Anders Folkmar Belling Kraneled",
