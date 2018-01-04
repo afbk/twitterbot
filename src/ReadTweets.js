@@ -13,14 +13,7 @@ let twitterCredentials = require('./twitterCredentials')
 let T = new twit(twitterCredentials)
 let _ = require('lodash')
 let Tweet = require('./Tweet')
-let express = require('express')
 
-//Webinterface in order to check status and to satisfy heroku.
-/*let app = express()
-app.get('/', (req, res) => res.send('Twitterbot running..'))
-app.listen(process.env.PORT, () => console.log('App listening on port ', process.env.PORT))
-
-*/
 
 let ReadTweets = function(user) {
   return new Promise((resolve, reject) => {
@@ -31,7 +24,11 @@ let ReadTweets = function(user) {
       resolve(
         T.get(
           'search/tweets', { from: user, count: 100, tweet_mode: 'extended' },
-          function(err, data, response) {}
+          function(err, data, response) {
+            if (err) {
+              console.log("Error: ", err)
+            }
+          }
         )
       )
     }
@@ -56,8 +53,7 @@ function CreateConcatenatedStringOfWords(username) {
 function CreateArrayFromString(username) {
   return new Promise((resolve, reject) => {
     CreateConcatenatedStringOfWords(username).then(result => {
-      let HTTPregex =
-        "/https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g"
+      let HTTPregex = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g
       let removeHTTP = result.replace(HTTPregex, '')
       let splitWords = removeHTTP.split(/[\.\!\,] ?/g)
 
