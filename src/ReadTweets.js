@@ -13,6 +13,15 @@ let twitterCredentials = require('./twitterCredentials')
 let T = new twit(twitterCredentials)
 let _ = require('lodash')
 let Tweet = require('./Tweet')
+let express = require('express')
+let app = express()
+
+app.get('/', (req, res) => {
+  res.send('Twitter bot running on port ', process.env.PORT)
+})
+app.listen(process.env.PORT, () => {
+  console.log('Twitter bot running on port ', process.env.PORT)
+})
 
 
 let ReadTweets = function(user) {
