@@ -17,7 +17,7 @@ let express = require('express')
 let app = express()
 
 app.get('/', (req, res) => {
-  res.send('Twitter bot running on port ', process.env.PORT)
+  res.send(`Twitter bot running on port ${process.env.PORT}`)
 })
 app.listen(process.env.PORT, () => {
   console.log('Twitter bot running on port ', process.env.PORT)
