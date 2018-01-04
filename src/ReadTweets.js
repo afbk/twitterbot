@@ -84,7 +84,7 @@ function ComposeTweet(tweetsArray) {
   }
 
   function ReplaceAmpersands(input) {
-    let output = input.replace("&amp;", "&")
+    let output = input.replace(/&amp;/g, "&")
     return output
   }
 
