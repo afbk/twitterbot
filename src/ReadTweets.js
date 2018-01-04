@@ -77,7 +77,7 @@ function ComposeTweet(tweetsArray) {
     for (var i = 0; i < input.length; i++) {
       let randomEntry = _.sample(input)
       if (randomEntry.toString.length + tweet.length < 180) {
-        tweet += randomEntry + '. '
+        tweet += randomEntry + ' '
       }
     }
     return tweet
