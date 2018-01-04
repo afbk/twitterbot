@@ -35,9 +35,9 @@ let ReadTweets = function(user) {
   })
 }
 
+//Concatenates the strings from all the tweets in order to split them into an array later
 let concatTweetsFromUser = ''
 
-//Concatenates the strings from all the tweets in order to split them into an array later
 function CreateConcatenatedStringOfWords(username) {
   return new Promise((resolve, reject) => {
     ReadTweets(username).then(result => {
@@ -78,7 +78,7 @@ function ComposeTweet(input) {
     for (var i = 0; i < input.length; i++) {
       let randomEntry = _.sample(input)
       if (randomEntry.toString.length + tweet.length < 180) {
-        tweet += randomEntry + ' '
+        tweet += randomEntry + '. '
       }
     }
   }
