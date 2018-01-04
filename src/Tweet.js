@@ -11,13 +11,6 @@ module.exports = (twitterCredentials);
 */
 let twitterCredentials = require('./twitterCredentials')
 let T = new twit(twitterCredentials)
-let express = require('express')
-
-let app = express()
-
-app.get('/', (req, res) => res.send('Twitterbot running..'))
-app.listen(process.env.PORT, () => console.log('App listening on port ', process.env.PORT))
-
 
 function Tweet(tweet) {
   if (!tweet) {

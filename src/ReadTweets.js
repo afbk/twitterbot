@@ -71,20 +71,24 @@ function CreateArrayFromString(username) {
 }
 
 // Construct the tweet
-function ComposeTweet(input) {
-  let tweet = ''
-
+function ComposeTweet(tweetsArray) {
   function PopulateTweet(input) {
+    let tweet = ''
     for (var i = 0; i < input.length; i++) {
       let randomEntry = _.sample(input)
       if (randomEntry.toString.length + tweet.length < 180) {
         tweet += randomEntry + '. '
       }
     }
+    return tweet
   }
 
-  PopulateTweet(input)
-  return tweet
+  function ReplaceAmpersands(input) {
+    let output = input.replace("&amp;", "&")
+    return output
+  }
+
+  return ReplaceAmpersands(PopulateTweet(tweetsArray))
 }
 
 //Submit the tweet
