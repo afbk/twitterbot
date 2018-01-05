@@ -64,7 +64,7 @@ function CreateArrayFromString(username) {
     CreateConcatenatedStringOfWords(username).then(result => {
       let HTTPregex = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g
       let removeHTTP = result.replace(HTTPregex, '')
-      let splitWords = removeHTTP.split(/[\.\!\,] ?/g)
+      let splitWords = removeHTTP.split(/\. |[\!\,] ?/g)
 
       function RemoveBlankEntries(input) {
         for (var i = 0; i < input.length; i++) {
