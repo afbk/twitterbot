@@ -111,4 +111,4 @@ function goGoGo() {
 goGoGo()
 setInterval(() => {
   goGoGo()
-}, 3600000)
+}, 10800000)
