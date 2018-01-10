@@ -20,7 +20,7 @@ const readTweets = function(userName) {
     if (!userName) reject(Error('Error: no user input in ReadTweets'))
     else {
       resolve(
-        T.get('search/tweets', { from: userName, count: 10, tweet_mode: 'extended' },
+        T.get('search/tweets', { from: userName, count: 100, tweet_mode: 'extended' },
           function(err, data, response) {
             if (err) console.log("Error reading tweet: ", err)
           }
@@ -81,20 +81,18 @@ function shuffleArray(inputArray) {
 //composes the tweet up to a max given length
 function composeTweet(inputArray) {
   return inputArray.reduce((acc, x) => {
-    if (acc.length + x.toString.length < 278) {
+    if (acc.length + x.toString.length < 200) {
       acc += ' ' + x
     }
     return acc
   })
 }
 
-
 //makes the tweet go tweet every x miliseconds
 setInterval(() => {
   readTweets('RealDonaldTrump')
     .then(x => {
-      console.log('Tweeting:',
-        tweetIt(
+      tweetIt(
           composeTweet(
             shuffleArray(
               trimWhitespace(
@@ -112,6 +110,7 @@ setInterval(() => {
               )
             )
           )
-        ))
+        )
+        .then(x => console.log('Tweeting: ', x.data.text))
     })
 }, 10800000)
