@@ -1,42 +1,28 @@
-let twit = require('twit')
-/*The required file below contains the credentials for logging in to twitter.
-It follows this format:
-let twitterCredentials = ({
-  consumer_key:         '...',
-  consumer_secret:      '...',
-  access_token:         '...',
-  access_token_secret:  '...',
-});
-module.exports = (twitterCredentials);
-*/
-let twitterCredentials = require('./twitterCredentials')
-let T = new twit(twitterCredentials)
-let _ = require('lodash')
-let Tweet = require('./Tweet')
-let express = require('express')
-let app = express()
+const twit = require('twit')
+const twitterCredentials = require('./twitterCredentials')
+const T = new twit(twitterCredentials)
+const _ = require('lodash')
+const tweetIt = require('./TweetIt')
+const express = require('express')
+const app = express()
 
+//sets up a webserver in order to show running status
 app.get('/', (req, res) => {
   res.send(`Twitter bot running on port ${process.env.PORT}`)
 })
 app.listen(process.env.PORT, () => {
-  console.log('Twitter bot running on port ', process.env.PORT)
+  console.log('Twitter bot listening on port ', process.env.PORT)
 })
 
-
-let ReadTweets = function(user) {
+//Read tweets from a given username
+const readTweets = function(userName) {
   return new Promise((resolve, reject) => {
-    if (!user) {
-      reject(Error('error no user input'))
-    }
+    if (!userName) reject(Error('Error: no user input in ReadTweets'))
     else {
       resolve(
-        T.get(
-          'search/tweets', { from: user, count: 100, tweet_mode: 'extended' },
+        T.get('search/tweets', { from: userName, count: 10, tweet_mode: 'extended' },
           function(err, data, response) {
-            if (err) {
-              console.log("Error: ", err)
-            }
+            if (err) console.log("Error reading tweet: ", err)
           }
         )
       )
@@ -44,71 +30,88 @@ let ReadTweets = function(user) {
   })
 }
 
-//Concatenates the strings from all the tweets in order to split them into an array later
-let concatTweetsFromUser = ''
+//concats an array of tweets in to a string
+function concatTweets(inputArray) {
+  return inputArray.data.statuses.map(x => x.full_text).join(' ')
 
-function CreateConcatenatedStringOfWords(username) {
-  return new Promise((resolve, reject) => {
-    ReadTweets(username).then(result => {
-      for (var i = 0; i < result.data.statuses.length; i++) {
-        concatTweetsFromUser += ' ' + result.data.statuses[i].full_text
-      }
-      resolve(concatTweetsFromUser)
-    })
+}
+
+//removes urls from string of tweets
+function removeHTTP(inputString) {
+  const HTTPregex = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g
+  return inputString.replace(HTTPregex, '')
+}
+
+//splits string up in to an array based on regex
+function splitSentences(inputString) {
+  return inputString.split(/\. |[\!\,] ?/g)
+}
+
+//removes blank entries in the array
+function removeBlankEntries(inputArray) {
+  return inputArray.filter((x) => {
+    if (x === '' || ' ' || '  ' || '   ') return true
+    else return false
   })
 }
 
-//Splits the concatenated string into an array in order to do things with it later
-function CreateArrayFromString(username) {
-  return new Promise((resolve, reject) => {
-    CreateConcatenatedStringOfWords(username).then(result => {
-      let HTTPregex = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g
-      let removeHTTP = result.replace(HTTPregex, '')
-      let splitWords = removeHTTP.split(/\. |[\!\,] ?/g)
-
-      function RemoveBlankEntries(input) {
-        for (var i = 0; i < input.length; i++) {
-          if (input[i].toString() == '') {
-            input.splice(i, 2)
-          }
-        }
-        return input
-      }
-      resolve(RemoveBlankEntries(splitWords))
-    })
+//removes entries in the array that consists of just numbers
+function removeNumbers(inputArray) {
+  return inputArray.filter((x) => {
+    if (x === /\d+/g) return false
+    else return true
   })
 }
 
-// Construct the tweet
-function ComposeTweet(tweetsArray) {
-  function PopulateTweet(input) {
-    let tweet = ''
-    for (var i = 0; i < input.length; i++) {
-      let randomEntry = _.sample(input)
-      if (randomEntry.toString.length + tweet.length < 180) {
-        tweet += randomEntry + ' '
-      }
+//replaces &amp; with &
+function replaceAmpersands(inputArray) {
+  return inputArray.map(x => x.replace(/&amp;/g, "&"))
+}
+
+//trims whitespace from start/end of entries in the array
+function trimWhitespace(inputArray) {
+  return inputArray.map(x => x.trim())
+}
+
+//randomises the arr
+function shuffleArray(inputArray) {
+  return _.shuffle(inputArray)
+}
+
+//composes the tweet up to a max given length
+function composeTweet(inputArray) {
+  return inputArray.reduce((acc, x) => {
+    if (acc.length + x.toString.length < 278) {
+      acc += ' ' + x
     }
-    return tweet
-  }
-
-  function ReplaceAmpersands(input) {
-    let output = input.replace(/&amp;/g, "&")
-    return output
-  }
-
-  return ReplaceAmpersands(PopulateTweet(tweetsArray))
-}
-
-//Submit the tweet
-function goGoGo() {
-  CreateArrayFromString('RealDonaldTrump').then(data => {
-    Tweet(ComposeTweet(data))
+    return acc
   })
 }
 
-//runs once then waits for one hour between tweets
-goGoGo()
+
+//makes the tweet go tweet every x miliseconds
 setInterval(() => {
-  goGoGo()
+  readTweets('RealDonaldTrump')
+    .then(x => {
+      console.log('Tweeting:',
+        tweetIt(
+          composeTweet(
+            shuffleArray(
+              trimWhitespace(
+                replaceAmpersands(
+                  removeNumbers(
+                    removeBlankEntries(
+                      splitSentences(
+                        removeHTTP(
+                          concatTweets(x)
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ))
+    })
 }, 10800000)
