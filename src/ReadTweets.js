@@ -81,7 +81,7 @@ function shuffleArray(inputArray) {
 //composes the tweet up to a max given length
 function composeTweet(inputArray) {
   return inputArray.reduce((acc, x) => {
-    if (acc.length + x.toString.length < 200) {
+    if (acc.length + x.length < 270) {
       acc += ' ' + x
     }
     return acc
@@ -89,28 +89,21 @@ function composeTweet(inputArray) {
 }
 
 //makes the tweet go tweet every x miliseconds
+const makeTweet = _.flow([
+  concatTweets,
+  removeHTTP,
+  splitSentences,
+  removeBlankEntries,
+  removeNumbers,
+  replaceAmpersands,
+  trimWhitespace,
+  shuffleArray,
+  composeTweet
+])
+
 setInterval(() => {
   readTweets('RealDonaldTrump')
-    .then(x => {
-      tweetIt(
-          composeTweet(
-            shuffleArray(
-              trimWhitespace(
-                replaceAmpersands(
-                  removeNumbers(
-                    removeBlankEntries(
-                      splitSentences(
-                        removeHTTP(
-                          concatTweets(x)
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-        .then(x => console.log('Tweeting: ', x.data.text))
-    })
+    .then(makeTweet)
+    .then(x => tweetIt(x))
+    .then(x => console.log(`Tweeting: ${x.data.text}`))
 }, 10800000)
