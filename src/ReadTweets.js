@@ -50,16 +50,20 @@ function splitSentences(inputString) {
 //removes blank entries in the array
 function removeBlankEntries(inputArray) {
   return inputArray.filter((x) => {
-    if (x === '' || ' ' || '  ' || '   ') return true
-    else return false
+    if (
+      x == "" ||
+      x == " " ||
+      x == "  " ||
+      x == "   ") { return false }
+    else { return true }
   })
 }
 
 //removes entries in the array that consists of just numbers
 function removeNumbers(inputArray) {
   return inputArray.filter((x) => {
-    if (x === /\d+/g) return false
-    else return true
+    return /\D/.test(x)
+
   })
 }
 
@@ -107,3 +111,17 @@ setInterval(() => {
     .then(x => tweetIt(x))
     .then(x => console.log(`Tweeting: ${x.data.text}`))
 }, 10800000)
+
+//export all functions for testing
+module.exports = {
+  makeTweet,
+  concatTweets,
+  removeHTTP,
+  splitSentences,
+  removeBlankEntries,
+  removeNumbers,
+  replaceAmpersands,
+  trimWhitespace,
+  shuffleArray,
+  composeTweet
+}
